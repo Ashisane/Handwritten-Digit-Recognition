@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digit Playground — Neural Network from Scratch</title>
+  <meta name="description"
+    content="Draw a digit and watch a neural network built entirely from scratch classify it in real-time. No frameworks. Just math." />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- Decorative background digits -->
+  <div class="bg-digits" aria-hidden="true">
+    <span class="bg-d" style="top:8%;left:5%;font-size:8rem;transform:rotate(-12deg)">3</span>
+    <span class="bg-d" style="top:15%;right:8%;font-size:6rem;transform:rotate(8deg)">7</span>
+    <span class="bg-d" style="top:45%;left:3%;font-size:10rem;transform:rotate(-5deg)">0</span>
+    <span class="bg-d" style="top:55%;right:4%;font-size:7rem;transform:rotate(15deg)">9</span>
+    <span class="bg-d" style="top:68%;left:18%;font-size:5rem;transform:rotate(6deg)">2</span>
+    <span class="bg-d" style="top:30%;right:18%;font-size:9rem;transform:rotate(-8deg)">5</span>
+    <span class="bg-d" style="top:70%;right:12%;font-size:11rem;transform:rotate(-3deg)">1</span>
+    <span class="bg-d" style="top:88%;left:35%;font-size:7rem;transform:rotate(10deg)">4</span>
+    <span class="bg-d" style="top:5%;left:40%;font-size:5rem;transform:rotate(-15deg)">8</span>
+    <span class="bg-d" style="top:92%;right:20%;font-size:6rem;transform:rotate(4deg)">6</span>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="https://github.com/Ashisane" class="header-brand">Ashisane</a>
+    <span class="header-sep">/</span>
+    <span class="header-label">Week 1</span>
+  </header>
+
+  <!-- Main: Hero + Playground together as one centered view -->
+  <main class="main">
+    <h1>Neural Network from Scratch</h1>
+    <p class="subtitle">Draw a digit below — watch pure math classify it.</p>
+
+    <div class="playground">
+      <!-- Canvas side -->
+      <div class="canvas-col">
+        <canvas id="draw-canvas" width="280" height="280"></canvas>
+        <button id="clear-btn">Clear</button>
+      </div>
+
+      <!-- Result side -->
+      <div class="result-col">
+        <div class="prediction">
+          <span class="prediction-label">Prediction</span>
+          <span class="prediction-digit" id="prediction-digit">?</span>
+          <span class="prediction-confidence" id="prediction-confidence"></span>
+        </div>
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- How It Works -->
+  <section class="how-section">
+    <h2>How It Works</h2>
+
+    <div class="step">
+      <span class="step-n">01</span>
+      <div>
+        <h3>Forward Pass</h3>
+        <p>Each pixel feeds into 128 hidden neurons via a weighted sum.</p>
+        <pre><code>def learn(data, weights):
+    return np.dot(data, weights)
+
+def hidden_unit(data, weights):
+    return activation_function(learn(data, weights))</code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-n">02</span>
+      <div>
+        <h3>ReLU Activation</h3>
+        <p>Negative signals are zeroed out. Only useful features survive.</p>
+        <pre><code>def activation_function(feature):
+    return(max(0, feature))</code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-n">03</span>
+      <div>
+        <h3>Softmax → Prediction</h3>
+        <p>10 output neurons squeezed into probabilities. The highest wins.</p>
+        <pre><code>def softmax(features):
+    updated_features = []
+    for feature in features:
+        updated_features.append(np.e ** feature)
+    total_sum = np.sum(updated_features)
+    return [i / total_sum for i in updated_features]</code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-n">04</span>
+      <div>
+        <h3>Backpropagation</h3>
+        <p>Error flows backward, adjusting every weight to be slightly less wrong.</p>
+        <pre><code>def error_l2(p, l):
+    e = []
+    for i in range(len(p)):
+        if i == l: e.append(1-p[i])
+        else: e.append(-p[i])
+    return np.array(e)
+
+def update_weights(cost, weights, lr=0.01):
+    return weights + cost * lr</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat"><span class="stat-val">784</span><span class="stat-lbl">Input Pixels</span></div>
+    <div class="stat"><span class="stat-val">128</span><span class="stat-lbl">Hidden Neurons</span></div>
+    <div class="stat"><span class="stat-val">10</span><span class="stat-lbl">Output Classes</span></div>
+    <div class="stat"><span class="stat-val">95.3%</span><span class="stat-lbl">Test Accuracy</span></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="https://github.com/Ashisane/Handwritten-Digit-Recognition" target="_blank" rel="noopener">View Source on
+      GitHub ↗</a>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

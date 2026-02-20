@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+public/weights/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model weights and data
+public/weights/*.json
+weights.json
+
+# Misc
+.env
+.vscode/
+*.pyc
+__pycache__/
