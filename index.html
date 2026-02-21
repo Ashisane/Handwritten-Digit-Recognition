@@ -4,11 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Digit Playground — Neural Network from Scratch</title>
+  <title>Neural Network from Scratch — Digit Playground</title>
   <meta name="description"
-    content="Draw a digit and watch a neural network built entirely from scratch classify it in real-time. No frameworks. Just math." />
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    content="Draw a handwritten digit and watch a neural network built from scratch classify it in real-time. No PyTorch. No TensorFlow. Just NumPy and math." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png" />
+  <link rel="apple-touch-icon" href="/favicon/favicon_io/apple-touch-icon.png" />
+  <link rel="manifest" href="/favicon/favicon_io/site.webmanifest" />
+  <meta name="theme-color" content="#44444E" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Neural Network from Scratch — Digit Playground" />
+  <meta property="og:description"
+    content="Draw a handwritten digit and watch a neural network built from scratch classify it in real-time. No PyTorch. No TensorFlow. Just NumPy and math." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -68,62 +80,58 @@
   <!-- How It Works -->
   <section class="how-section">
     <h2>How It Works</h2>
+    <p class="how-intro">
+      This project builds a neural network from first principles using MNIST (60,000 train, 10,000 test) and serves the
+      learned weights directly in-browser for real-time digit recognition.
+    </p>
 
     <div class="step">
       <span class="step-n">01</span>
-      <div>
-        <h3>Forward Pass</h3>
-        <p>Each pixel feeds into 128 hidden neurons via a weighted sum.</p>
-        <pre><code>def learn(data, weights):
-    return np.dot(data, weights)
-
-def hidden_unit(data, weights):
-    return activation_function(learn(data, weights))</code></pre>
+      <div class="step-content">
+        <h3>Input Representation</h3>
+        <p>Each MNIST image is 28x28 grayscale, flattened into a 784-length vector with values normalized to 0-1. This
+          vector is the raw numeric signal the network learns from.</p>
       </div>
     </div>
 
     <div class="step">
       <span class="step-n">02</span>
-      <div>
-        <h3>ReLU Activation</h3>
-        <p>Negative signals are zeroed out. Only useful features survive.</p>
-        <pre><code>def activation_function(feature):
-    return(max(0, feature))</code></pre>
+      <div class="step-content">
+        <h3>Feature Extraction (784 -> 128)</h3>
+        <p>The first weight matrix projects input pixels into 128 hidden units. ReLU keeps positive activations and
+          suppresses weak/noisy responses, turning random weights into useful digit-sensitive features.</p>
       </div>
     </div>
 
     <div class="step">
       <span class="step-n">03</span>
-      <div>
-        <h3>Softmax → Prediction</h3>
-        <p>10 output neurons squeezed into probabilities. The highest wins.</p>
-        <pre><code>def softmax(features):
-    updated_features = []
-    for feature in features:
-        updated_features.append(np.e ** feature)
-    total_sum = np.sum(updated_features)
-    return [i / total_sum for i in updated_features]</code></pre>
+      <div class="step-content">
+        <h3>Classification Head (128 -> 10)</h3>
+        <p>Hidden activations are mapped to 10 logits, one for each digit class (0-9). Softmax converts logits into
+          probabilities, and the highest probability is selected as the prediction.</p>
       </div>
     </div>
 
     <div class="step">
       <span class="step-n">04</span>
-      <div>
-        <h3>Backpropagation</h3>
-        <p>Error flows backward, adjusting every weight to be slightly less wrong.</p>
-        <pre><code>def error_l2(p, l):
-    e = []
-    for i in range(len(p)):
-        if i == l: e.append(1-p[i])
-        else: e.append(-p[i])
-    return np.array(e)
+      <div class="step-content">
+        <h3>Learning Signal and Backpropagation</h3>
+        <p>Error is computed as actual - prediction, giving direction to weight updates. Output-layer updates are scaled
+          by hidden activations and learning rate, then propagated back to input-layer weights so every update reflects
+          contribution to final error.</p>
+      </div>
+    </div>
 
-def update_weights(cost, weights, lr=0.01):
-    return weights + cost * lr</code></pre>
+    <div class="step">
+      <span class="step-n">05</span>
+      <div class="step-content">
+        <h3>Browser Inference Pipeline</h3>
+        <p>Canvas input is cropped, scaled to fit a 20x20 box, centered by center-of-mass in a 28x28 frame, and
+          normalized before inference. Matching MNIST-style preprocessing is what makes the deployed model robust enough
+          to reach ~95% test accuracy.</p>
       </div>
     </div>
   </section>
-
   <!-- Stats -->
   <section class="stats">
     <div class="stat"><span class="stat-val">784</span><span class="stat-lbl">Input Pixels</span></div>
