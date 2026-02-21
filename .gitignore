@@ -1,10 +1,9 @@
 # Node modules
 node_modules/
-package-lock.json
+#package-lock.json
 
 # Build output
 dist/
-public/weights/
 
 # Logs
 logs/
@@ -18,8 +17,8 @@ yarn-error.log*
 Thumbs.db
 
 # Model weights and data
-public/weights/*.json
-weights.json
+public/weights/*
+!public/weights/weights.json
 
 # Misc
 .env
