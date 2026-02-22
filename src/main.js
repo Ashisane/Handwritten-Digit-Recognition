@@ -1,4 +1,6 @@
 import './style.css';
+import { inject } from '@vercel/analytics';
+inject();
 
 // ===== NEURAL NETWORK =====
 let w1 = null;
